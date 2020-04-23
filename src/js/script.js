@@ -91,6 +91,7 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
 
     initAccordion() {
@@ -154,6 +155,8 @@
       const formData = utils.serializeFormToObject(thisProduct.form);
       console.log('formData', formData);
 
+      thisProduct.params = {};
+
       /* set variable price to equal thisProduct.data.price */
       let price = thisProduct.data.price;
 
@@ -185,14 +188,35 @@
 
           }
           /* END ELSE IF: if option is not selected and option is default */
-        }
-        /* END LOOP: for each optionId in param.options */
-      }
+          // blok if/else - obrazki
+          const optionImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
+
+          if (optionSelected) {
+            if (!thisProduct.params[paramId]) {
+              thisProduct.params[paramId] = {
+                label: param.label,
+                options: {},
+              };
+            }
+            thisProduct.params[paramId].options[optionId] = option.label;
+
+            for (let image of optionImages) {
+              image.classList.add(classNames.menuProduct.imageVisible);
+            }
+          } else {
+            for (let image of optionImages) {
+              image.classList.remove(classNames.menuProduct.imageVisible);
+            }
+          }
+
+        } // było
+      } /* END LOOP: for each optionId in param.options */
+
       /* END LOOP: for each paramId in thisProduct.data.params */
 
       /* set the contents of thisProduct.priceElem to be the value of variable price */
       thisProduct.priceElem.innerHTML = price;
-    }
+    } // zamknięcie processOrder
 
   } // ten nawias powinien zamykać klasę Product
 
