@@ -238,8 +238,9 @@
     constructor(element) {
       const thisWidget = this;
       thisWidget.getElements(element);
+      thisWidget.value = settings.amountWidget.defaultValue;
       thisWidget.setValue(thisWidget.input.value);
-      thisWidget.initActions (); 
+      thisWidget.initActions();
 
       console.log('AmountWidget:', thisWidget);
       console.log('constructor arguments:', element);
@@ -259,9 +260,12 @@
 
       const newValue = parseInt(value);
 
-      /* TODO: Add validation */
-      thisWidget.value = newValue;
-      thisWidget.announce();
+      /* validation */
+      if (newValue != thisWidget.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
+
+        thisWidget.value = newValue;
+        thisWidget.announce();
+      }
 
       thisWidget.input.value = thisWidget.value; // CZEMU TO NIE MOZE BYC ZAPISANE NARAZ?
     }
