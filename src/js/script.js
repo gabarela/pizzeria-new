@@ -171,6 +171,7 @@
       thisProduct.cartButton.addEventListener('click', function(event) {
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
 
     }
@@ -220,13 +221,13 @@
           const optionImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
 
           if (optionSelected) {
-            if (!thisProduct.params[paramId]) {
+            if (!thisProduct.params[paramId]) { // jeśli parametr nie został dodany do parametrów
               thisProduct.params[paramId] = {
                 label: param.label,
                 options: {},
               };
             }
-            thisProduct.params[paramId].options[optionId] = option.label;
+            thisProduct.params[paramId].options[optionId] = option.label; // do obiektu options dodajemy zaznaczoną opcję - klucz option, wartosc label
 
             for (let image of optionImages) {
               image.classList.add(classNames.menuProduct.imageVisible);
@@ -242,10 +243,13 @@
 
       /* END LOOP: for each paramId in thisProduct.data.params */
       /* multiply price by amount */
-      price *= thisProduct.amountWidget.value;
+      thisProduct.priceSingle = price;
+      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
 
       /* set the contents of thisProduct.priceElem to be the value of variable price */
-      thisProduct.priceElem.innerHTML = price;
+      thisProduct.priceElem.innerHTML = thisProduct.price;
+
+      console.log('thisProduct.params', thisProduct.params)
     } // zamknięcie processOrder
 
     initAmountWidget() {
@@ -256,6 +260,15 @@
       thisProduct.amountWidgetElem.addEventListener('updated', function() {
         thisProduct.processOrder();
       });
+    }
+
+    addToCart() {
+      const thisProduct = this;
+
+      thisProduct.name = thisProduct.data.name;
+      thisProduct.amount = thisProduct.amountWidget.value;
+
+      app.cart.add(thisProduct);
     }
 
   } // ten nawias powinien zamykać klasę Product
@@ -346,6 +359,8 @@
       thisCart.dom.wrapper = element;
 
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger); // ?
+
+      thisCart.dom.productList = document.querySelector(select.cart.productList); // ? z tym miałam problem
     }
 
     initActions() {
@@ -353,10 +368,21 @@
 
       thisCart.dom.toggleTrigger.addEventListener('click', function() {
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
-
       });
-
     }
+
+    add(menuProduct) {
+      const thisCart = this;
+
+      const generatedHTML = templates.cartProduct(menuProduct);
+
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);
+
+      thisCart.dom.productList.appendChild(generatedDOM);
+
+      console.log('adding product', menuProduct);
+    }
+
   } // zamkniecie Cart
 
   const app = {
