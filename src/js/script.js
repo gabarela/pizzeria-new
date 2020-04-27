@@ -249,7 +249,7 @@
       /* set the contents of thisProduct.priceElem to be the value of variable price */
       thisProduct.priceElem.innerHTML = thisProduct.price;
 
-      console.log('thisProduct.params', thisProduct.params)
+      console.log('thisProduct.params', thisProduct.params);
     } // zamknięcie processOrder
 
     initAmountWidget() {
