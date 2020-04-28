@@ -82,7 +82,7 @@
     constructor(id, data) {
       const thisProduct = this;
       thisProduct.id = id;
-      thisProduct.data = data;
+      thisProduct.data = data; // data to są wszystkie właściwości produktu - gdzie w kodzie, w którym pliku znajduje się informacja ze ten obiekt data to dokładnie dataSource.products z data.js???
 
       thisProduct.renderInMenu();
       thisProduct.getElements();
@@ -90,27 +90,29 @@
       thisProduct.initOrderForm();
       thisProduct.initAmountWidget();
       thisProduct.processOrder();
-      //console.log('new Product:', thisProduct);
+      console.log('new Product:', thisProduct);
     }
 
-    renderInMenu() {
+    renderInMenu() {  // odpowiada za wyświetlanie produktów w menu
       const thisProduct = this;
 
-      /* generate HTML based on template */
+      /* generate HTML based on template */ // generuje kod produktu
       const generatedHTML = templates.menuProduct(thisProduct.data);
 
-      /*create elment using utils.createElementFromHTML */
-      thisProduct.element = utils.createDOMFromHTML(generatedHTML);
+      /*create elment using utils.createElementFromHTML */ // elem DOM czyli obiekt wygenerowany przez przeglądarkę na podstawie kodu HTML
+      thisProduct.element = utils.createDOMFromHTML(generatedHTML); // element DOM zapisany jest jako właściwość instancji by był do niego dostap w innych w innych metodach
 
       /* find menu container */
       const menuContainer = document.querySelector(select.containerOf.menu);
 
       /* add element to menu */
       menuContainer.appendChild(thisProduct.element);
-
     }
 
-    getElements() {
+    // dlaczego w renderInMenu nie ma pętli jakiejś która by szła przez wszystkie skoro generuje to wszystkie produkty???
+    // odp na powyższe: renderInMenu jest uruchamia w konstruktorze klasy, to przy tworzeniu każdej nowej instancji dla danego produktu, od razu renderuje się on na stronie.
+
+    getElements() { // odniesienia do poszczególnych elementów DOM stworzonych na podstawie szablonu handlebars; metoda która w jednym miejscu odnajduje poszczególne elementy w kontenerze produktu
       const thisProduct = this;
 
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
@@ -122,7 +124,7 @@
       thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
 
-    initAccordion() {
+    initAccordion() { // odpowaiada za wyswietlanie pełnych opcji produktu po kliknięciu; nadaje i odbiera klasę active
       const thisProduct = this;
 
       /* find the clickable trigger (the element that should react to clicking) */
@@ -135,7 +137,7 @@
         event.preventDefault();
 
         /* toggle active class on element of thisProduct */
-        thisProduct.element.classList.toggle('active');
+        thisProduct.element.classList.toggle('active'); // thisProduct.element to element bieżącego produktu czyli tego który wybieramy
 
         /* find all active products */
         const activeProducts = document.querySelectorAll('article.active');
@@ -154,7 +156,7 @@
       });
     }
 
-    initOrderForm() {
+    initOrderForm() { // uruchamiana raz dla każdego produktu; odpowiedzialna za dodanie listenerów eventu do formularza, kontrolek, guzika dodania do koszyka; gdy będą kliknięte przeliczy zamówienie na nowo
       const thisProduct = this;
 
       thisProduct.form.addEventListener('submit', function(event) {
@@ -180,7 +182,7 @@
       const thisProduct = this;
       //console.log('processOrder');
 
-      /* read all data from the form (using utils.serializeFormToObject) and save it to const formData */
+      /* read all data from the form (using utils.serializeFormToObject) and save it to const formData */ // ta f serialize pokazuje które opcje są wybrane
       const formData = utils.serializeFormToObject(thisProduct.form);
       //console.log('formData', formData);
 
