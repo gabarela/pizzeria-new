@@ -93,7 +93,7 @@
       console.log('new Product:', thisProduct);
     }
 
-    renderInMenu() {  // odpowiada za wyświetlanie produktów w menu
+    renderInMenu() { // odpowiada za wyświetlanie produktów w menu
       const thisProduct = this;
 
       /* generate HTML based on template */ // generuje kod produktu
@@ -113,7 +113,7 @@
     // odp na powyższe: renderInMenu jest uruchamia w konstruktorze klasy, to przy tworzeniu każdej nowej instancji dla danego produktu, od razu renderuje się on na stronie.
 
     getElements() { // odniesienia do poszczególnych elementów DOM stworzonych na podstawie szablonu handlebars; metoda która w jednym miejscu odnajduje poszczególne elementy w kontenerze produktu
-      const thisProduct = this;
+      const thisProduct = this; // czyli te wszystkie lementy powstały dzieki zastosowaniu handlebara w renderInMenu linia 100???
 
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
       thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
@@ -127,7 +127,7 @@
     initAccordion() { // odpowaiada za wyswietlanie pełnych opcji produktu po kliknięciu; nadaje i odbiera klasę active
       const thisProduct = this;
 
-      /* find the clickable trigger (the element that should react to clicking) */
+      /* find the clickable trigger (the element that should react to clicking) */ // przeniesiony do f getElement
       // const accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
 
       /* START: click event listener to trigger */
@@ -156,7 +156,7 @@
       });
     }
 
-    initOrderForm() { // uruchamiana raz dla każdego produktu; odpowiedzialna za dodanie listenerów eventu do formularza, kontrolek, guzika dodania do koszyka; gdy będą kliknięte przeliczy zamówienie na nowo
+    initOrderForm() { // uruchamiana raz dla każdego produktu; odpowiedzialna za dodanie listenerów eventu do formularza, kontrolek, guzika dodania do koszyka; gdy będą kliknięte wywoła f przelicz zamówienie na nowo
       const thisProduct = this;
 
       thisProduct.form.addEventListener('submit', function(event) {
@@ -204,6 +204,8 @@
           const option = param.options[optionId];
 
           const optionSelected = formData.hasOwnProperty(paramId) && formData[paramId].indexOf(optionId) > -1;
+          // czy istnieje formData[paramId] jeśli tak to wykona się dalszy kod (po &&) czy ta tablica zawiera klucz równy wartości optionId
+
           /* START IF: if option is selected and option is not default */
           if (optionSelected && !option.default) {
 
@@ -308,7 +310,7 @@
         thisWidget.announce();
       }
 
-      thisWidget.input.value = thisWidget.value; // CZEMU TO NIE MOZE BYC ZAPISANE NARAZ?
+      thisWidget.input.value = thisWidget.value; // CZEMU TO NIE MOZE BYC ZAPISANE NARAZ z tym w 307?
     }
 
     initActions() {
@@ -334,7 +336,9 @@
     announce() {
       const thisWidget = this;
 
-      const event = new Event('updated');
+      const event = new CustomEvent('updated', {
+        bubbles: true // dzieki właściwości bubles którą włączyliśmy po wykonaniu eventu na jakimś elemencie będzie on przekazywany rodzicowi i rodzicowi rodzica aż do body, document i window
+      });
       thisWidget.element.dispatchEvent(event);
     }
 
@@ -345,6 +349,8 @@
       const thisCart = this;
 
       thisCart.products = [];
+
+      thisCart.deliveryFee = settings.cart.defaultDeliveryFee;
 
       thisCart.getElements(element);
       thisCart.initActions();
@@ -363,6 +369,12 @@
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger); // ?
 
       thisCart.dom.productList = document.querySelector(select.cart.productList); // ? z tym miałam problem
+
+      thisCart.renderTotalsKeys = ['totalNumber', 'totalPrice', 'subtotalPrice', 'deliveryFee']; // Tworzymy tutaj tablicę, która zawiera cztery stringi (ciągi znaków). Każdy z nich jest kluczem w obiekcie select.cart
+
+      for (let key of thisCart.renderTotalsKeys) { //  Wykorzystamy tę tablicę, aby szybko stworzyć cztery właściwości obiektu thisCart.dom o tych samych kluczach. Każda z nich będzie zawierać kolekcję elementów znalezionych za pomocą odpowiedniego selektora.
+        thisCart.dom[key] = thisCart.dom.wrapper.querySelectorAll(select.cart[key]);
+      }
     }
 
     initActions() {
@@ -370,6 +382,14 @@
 
       thisCart.dom.toggleTrigger.addEventListener('click', function() {
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
+      });
+
+      thisCart.dom.productList.addEventListener('updated', function() {
+        thisCart.update();
+      });
+
+      thisCart.dom.productList.addEventListener('remove', function() {
+        thisCart.remove(event.detail.cartProduct);
       });
     }
 
@@ -386,6 +406,42 @@
 
       thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
       //console.log('thisCart.products', thisCart.products);
+
+      thisCart.update();
+    }
+
+    update() {
+      const thisCart = this;
+
+      thisCart.totalNumber = 0;
+      thisCart.subtotalPrice = 0;
+
+      for (let thisCartProduct of thisCart.products) {
+        thisCart.subtotalPrice = thisCart.subtotalPrice + thisCartProduct.price;
+        thisCart.totalNumber = thisCart.totalNumber + thisCart.amount;
+
+      }
+
+      thisCart.totalPrice = thisCart.subtotalPrice + thisCart.deliveryFee;
+
+      for (let key of thisCart.renderTotalsKeys) {
+        for (let elem of thisCart.dom[key]) {
+          elem.innerHTML = thisCart[key]; // dla każdego z elementów ustawiamy właściwość która ma taki sam klucz
+        }
+      }
+
+    }
+
+    remove(cartProduct) {
+      const thisCart = this;
+
+      const index = thisCart.products.indexOf(cartProduct);
+
+      thisCart.products.splice(index, 1); // usuwamy element o tym indeksie z tablicy thisCart.products
+
+      cartProduct.dom.wrapper.remove();
+
+      thisCart.update();
     }
 
   } // zamkniecie Cart
@@ -403,6 +459,7 @@
 
       thisCartProduct.getElements(element);
       thisCartProduct.initAmountWidget();
+      thisCartProduct.initActions();
 
       //console.log('new CartProduct', thisCartProduct);
       //console.log('productData', menuProduct);
@@ -433,7 +490,38 @@
         thisCartProduct.dom.price.innerHTML = thisCartProduct.price; // wyświetlenie ceny w koszyku
       });
     }
-  }
+
+    remove() {
+      const thisCartProduct = this;
+
+      const event = new CustomEvent('remove', {
+        bubbles: true,
+        detail: {
+          cartProduct: thisCartProduct,
+        },
+      });
+
+      thisCartProduct.dom.wrapper.dispatchEvent(event);
+    }
+
+    initActions() {
+
+      const thisCartProduct = this;
+
+      thisCartProduct.dom.edit.addEventListener('click', function(event) {
+        event.preventDefault();
+      });
+
+
+      thisCartProduct.dom.remove.addEventListener('click', function(event) {
+        event.preventDefault();
+        thisCartProduct.remove();
+
+      });
+
+    }
+
+  } // zamknięcie CartProduct
 
   const app = {
     initMenu: function() {
