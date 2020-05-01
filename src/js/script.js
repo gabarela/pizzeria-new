@@ -71,6 +71,11 @@
     cart: {
       defaultDeliveryFee: 20,
     },
+    db: {
+      url: '//localhost:3131',
+      product: 'product',
+      order: 'order',
+    },
   };
 
   const templates = {
@@ -375,6 +380,11 @@
       for (let key of thisCart.renderTotalsKeys) { //  Wykorzystamy tę tablicę, aby szybko stworzyć cztery właściwości obiektu thisCart.dom o tych samych kluczach. Każda z nich będzie zawierać kolekcję elementów znalezionych za pomocą odpowiedniego selektora.
         thisCart.dom[key] = thisCart.dom.wrapper.querySelectorAll(select.cart[key]);
       }
+
+      thisCart.dom.form = thisCart.dom.wrapper.querySelector(select.cart.form);
+
+      thisCart.dom.phone = document.querySelector(select.cart.phone);
+      thisCart.dom.address = document.querySelector(select.cart.address);
     }
 
     initActions() {
@@ -390,6 +400,11 @@
 
       thisCart.dom.productList.addEventListener('remove', function() {
         thisCart.remove(event.detail.cartProduct);
+      });
+
+      thisCart.dom.form.addEventListener('submit', function() {
+        event.preventDefault();
+        thisCart.sendOrder();
       });
     }
 
@@ -442,6 +457,47 @@
       cartProduct.dom.wrapper.remove();
 
       thisCart.update();
+    }
+
+    sendOrder() {
+      const thisCart = this;
+
+      const url = settings.db.url + '/' + settings.db.order; // adres endpointu zamówienia
+
+      const payload = { // ładunek - dane wysyłane do serwera
+        phone: thisCart.dom.phone,
+        address: thisCart.dom.address,
+        totalPrice: thisCart.totalPrice,
+        totalNumber: thisCart.totalNumber,
+        subtotalPrice: thisCart.subtotalPrice,
+        totalPrice: thisCart.totalPrice,
+        deliveryFee: thisCart.deliveryFee,
+        products: [], // pusta tablica
+      };
+
+      for (let singleProduct of thisCart.products) {
+        singleProduct.getData();
+        console.log(singleProduct);
+
+        payload.products.push(singleProduct); // zwrucony wnika dodany do tablicy payload.products
+        console.log(payload.products);
+
+      }
+
+      const options = { // opcje które skonfigurują zapytanie
+        method: 'POST', // zmiana domyślnej metody GEt na POST czyli wysylanie
+        headers: { // zmiana nagłówka by serwer wiedział że wysyłamy dane w frmacie json
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload), // body czyli treść kt wysyłamy // metoda JSON.stringify kt konwertuje obiekt payload na ciąg znaków w formacie json
+      };
+
+      fetch(url, options)
+        .then(function(response) {
+          return response.json();
+        }).then(function(parsedResponse) {
+          console.log('parsedResponse', parsedResponse);
+        });
     }
 
   } // zamkniecie Cart
@@ -516,9 +572,21 @@
       thisCartProduct.dom.remove.addEventListener('click', function(event) {
         event.preventDefault();
         thisCartProduct.remove();
-
       });
+    }
 
+    getData() {
+      const thisCartProduct = this;
+
+      const productData = {
+        id: thisCartProduct.id,
+        amount: thisCartProduct.amount,
+        price: thisCartProduct.price,
+        priceSingle: thisCartProduct.priceSingle,
+        params: thisCartProduct.params,
+      };
+
+      return productData;
     }
 
   } // zamknięcie CartProduct
@@ -529,7 +597,7 @@
       //console.log('thisApp.data:', thisApp.data);
 
       for (let productData in thisApp.data.products) {
-        new Product(productData, thisApp.data.products[productData]);
+        new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
       }
     },
     initCart: function() {
@@ -541,7 +609,25 @@
 
     initData: function() {
       const thisApp = this;
-      thisApp.data = dataSource;
+      thisApp.data = {};
+
+      const url = settings.db.url + '/' + settings.db.product; // w stałej zapisany adres endpointa
+
+      fetch(url) // wysyłamy zapytanie do serwera pod podany adres endpointu
+        .then(function(rawResponse) {
+          return rawResponse.json(); // odpowiedż z serwera
+        })
+        .then(function(parsedResponse) { // otrzymaną odpowiedż konwertujemy z JSON na tablicę // kod w tej f wykona sie dopiero jak otrzyma odp z serwera
+          console.log('parsedResponse', parsedResponse);
+
+          /* save parsedResponse as thisApp.data.products */
+          thisApp.data.products = parsedResponse;
+
+          /* execute initMenu method */
+          thisApp.initMenu();
+        });
+
+      console.log('thisApp.data', JSON.stringify(thisApp.data));
     },
 
     init: function() {
@@ -553,7 +639,7 @@
       //console.log('templates:', templates);
 
       thisApp.initData();
-      thisApp.initMenu();
+      // wywołanie f initMenu przenosimy na górę do f (parsedResponse) która wykonuje się dopiero po otrzymaniu odp z serwera // czyli wykona sie gdy skrpt otrzyma już liste produktów
       thisApp.initCart();
     },
   };
