@@ -96,10 +96,8 @@ export const settings = {
     close: 24,
   },
   amountWidget: {
-
     defaultValue: 1,
     defaultMin: 1,
-
     defaultMax: 9,
   },
 
@@ -107,8 +105,6 @@ export const settings = {
     maxDaysInFuture: 14,
   },
   cart: {
-
-
     defaultDeliveryFee: 20,
   },
 
@@ -119,7 +115,6 @@ export const settings = {
 
     url: '//localhost:3131',
     product: 'product',
-
     order: 'order',
     booking: 'booking',
     event: 'event',
