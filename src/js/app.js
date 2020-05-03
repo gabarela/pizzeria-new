@@ -5,6 +5,9 @@ import {
   Cart
 } from './components/Cart.js';
 import {
+  Booking
+} from './components/Booking.js';
+import {
   select,
   settings,
   classNames
@@ -67,6 +70,7 @@ const app = {
     thisApp.initData();
     // wywołanie f initMenu przenosimy na górę do f (parsedResponse) która wykonuje się dopiero po otrzymaniu odp z serwera // czyli wykona sie gdy skrpt otrzyma już liste produktów
     thisApp.initCart();
+    thisApp.initBooking();
   },
 
   initPages: function(){
@@ -115,6 +119,14 @@ const app = {
       page.classList.toggle(classNames.pages.active, page.getAttribute('id') == pageId);
     }
     window.location.hash = '#/' + pageId;
+  },
+
+  initBooking: function(){
+    const thisApp = this;
+
+    const bookingElem = document.querySelector(select.containerOf.booking);
+    thisApp.booking = new Booking (bookingElem);
+
   }
 
 };

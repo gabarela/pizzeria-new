@@ -140,7 +140,7 @@ export class Cart {
       singleProduct.getData();
       console.log(singleProduct);
 
-      payload.products.push(singleProduct); // zwrucony wnika dodany do tablicy payload.products
+      payload.products.push(singleProduct); // zwrucony wynik dodany do tablicy payload.products
       console.log(payload.products);
 
     }
