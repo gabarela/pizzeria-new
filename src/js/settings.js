@@ -96,45 +96,41 @@ export const settings = {
     close: 24,
   },
   amountWidget: {
-    amountWidget: {
-      defaultValue: 1,
-      defaultValue: 1,
-      defaultMin: 1,
-      defaultMin: 1,
-      defaultMax: 9,
-      defaultMax: 9,
-    },
+
+    defaultValue: 1,
+    defaultMin: 1,
+
+    defaultMax: 9,
   },
+
   datePicker: {
     maxDaysInFuture: 14,
   },
   cart: {
-    cart: {
-      defaultDeliveryFee: 20,
-      defaultDeliveryFee: 20,
-    },
+
+
+    defaultDeliveryFee: 20,
   },
+
   booking: {
     tableIdAttribute: 'data-table',
   },
   db: {
-    db: {
-      url: '//localhost:3131',
-      url: '//localhost:3131',
-      product: 'product',
-      product: 'product',
-      order: 'order',
-      order: 'order',
-      booking: 'booking',
-      event: 'event',
-      dateStartParamKey: 'date_gte',
-      dateEndParamKey: 'date_lte',
-      notRepeatParam: 'repeat=false',
-      repeatParam: 'repeat_ne=false',
-    },
+
+    url: '//localhost:3131',
+    product: 'product',
+
+    order: 'order',
+    booking: 'booking',
+    event: 'event',
+    dateStartParamKey: 'date_gte',
+    dateEndParamKey: 'date_lte',
+    notRepeatParam: 'repeat=false',
+    repeatParam: 'repeat_ne=false',
   },
+
 };
-};
+
 
 export const templates = {
   menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
