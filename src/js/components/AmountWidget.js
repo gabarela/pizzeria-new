@@ -36,7 +36,7 @@ export class AmountWidget {
       thisWidget.announce();
     }
 
-    thisWidget.input.value = thisWidget.value; // CZEMU TO NIE MOZE BYC ZAPISANE NARAZ z tym w 307?
+    thisWidget.input.value = thisWidget.value;
   }
 
   initActions() {
