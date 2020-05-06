@@ -25,6 +25,7 @@ export class Booking {
     thisBooking.dom.peopleAmount = document.querySelector(select.booking.peopleAmount);
     thisBooking.dom.hoursAmount = document.querySelector(select.booking.hoursAmount);
 
+    thisBooking.dom.datePicker = thisBooking.dom.wrapper(select.widget.datePicker.wrapper);
 
   }
 
@@ -33,6 +34,6 @@ export class Booking {
 
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
-
+    thisBooking.datePicker = new DatePicker (thisBooking.dom.datePicker);
   }
 }
