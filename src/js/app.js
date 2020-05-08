@@ -124,8 +124,8 @@ const app = {
   initBooking: function(){
     const thisApp = this;
 
-    const bookingElem = document.querySelector(select.containerOf.booking);
-    thisApp.booking = new Booking (bookingElem);
+    const bookingElement = document.querySelector(select.containerOf.booking);
+    thisApp.booking = new Booking (bookingElement);
 
   }
 

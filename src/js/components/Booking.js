@@ -11,28 +11,28 @@ import {
 
 
 export class Booking {
-  constructor(bookingElem) {
+  constructor(bookingElement) {
     const thisBooking = this;
 
-    thisBooking.render(bookingElem);
+    thisBooking.render(bookingElement);
     thisBooking.initWidgets();
 
   }
 
-  render(bookingElem) {
+  render(bookingElement) {
     const thisBooking = this;
 
     const generatedHTML = templates.bookingWidget();
 
     thisBooking.dom = {};
-    thisBooking.dom.wrapper = bookingElem;
+    thisBooking.dom.wrapper = bookingElement;
 
     thisBooking.dom.wrapper.innerHTML = generatedHTML; // zawartość wrappera zamienia na kod wygenerowany z szblonu
 
     thisBooking.dom.peopleAmount = document.querySelector(select.booking.peopleAmount);
     thisBooking.dom.hoursAmount = document.querySelector(select.booking.hoursAmount);
 
-    thisBooking.dom.datePicker = thisBooking.dom.wrapper(select.widget.datePicker.wrapper);
+    thisBooking.dom.datePicker = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
 
   }
 

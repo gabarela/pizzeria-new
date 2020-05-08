@@ -15,7 +15,7 @@ export class DatePicker extends BaseWidget {
   constructor(wrapper) {
     super(wrapper, utils.dateToStr(new Date()));
     const thisWidget = this;
-    thisWidget.dom.input = thisWidget.dom.wrapper.querySelector(select.widget.datePicker.input);
+    thisWidget.dom.input = thisWidget.dom.wrapper.querySelector(select.widgets.datePicker.input);
     thisWidget.initPlugin();
   }
 
@@ -36,7 +36,7 @@ export class DatePicker extends BaseWidget {
       'locale': {
         firstDayOfWeek: 1,
       },
-      onChange: function(dateStr) {
+      onChange: function(selectedDates, dateStr) {
         thisWidget.value = dateStr;
       },
     });
