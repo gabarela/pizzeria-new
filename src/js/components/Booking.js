@@ -1,9 +1,17 @@
-import {templates, select} from '../settings.js';
-import { AmountWidget } from './AmountWidget.js';
+import {
+  templates,
+  select
+} from '../settings.js';
+import {
+  AmountWidget
+} from './AmountWidget.js';
+import {
+  DatePicker
+} from './DatePicker.js';
 
 
 export class Booking {
-  constructor(bookingElem){
+  constructor(bookingElem) {
     const thisBooking = this;
 
     thisBooking.render(bookingElem);
@@ -11,13 +19,12 @@ export class Booking {
 
   }
 
-  render(bookingElem){
+  render(bookingElem) {
     const thisBooking = this;
 
     const generatedHTML = templates.bookingWidget();
 
     thisBooking.dom = {};
-
     thisBooking.dom.wrapper = bookingElem;
 
     thisBooking.dom.wrapper.innerHTML = generatedHTML; // zawartość wrappera zamienia na kod wygenerowany z szblonu
@@ -29,11 +36,11 @@ export class Booking {
 
   }
 
-  initWidgets(){
+  initWidgets() {
     const thisBooking = this;
 
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
-    thisBooking.datePicker = new DatePicker (thisBooking.dom.datePicker);
+    thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
   }
 }
