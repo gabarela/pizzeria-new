@@ -25,9 +25,6 @@ export class DatePicker extends BaseWidget {
     thisWidget.maxDate = utils.addDays(thisWidget.minDate, settings.datePicker.maxDaysInFuture);
 
     flatpickr(thisWidget.dom.input, {
-      altInput: true,
-      altFormat: "F j, Y",
-      dateFormat: "Y-m-d",
       defaultDate: thisWidget.minDate,
       minDate: thisWidget.minDate,
       maxDate: thisWidget.maxDate,
