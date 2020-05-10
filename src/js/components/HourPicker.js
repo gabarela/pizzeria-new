@@ -1,15 +1,8 @@
 /* global rangeSlider */
 
-import {
-  BaseWidget
-} from './BaseWidget.js';
-import {
-  utils
-} from '../utils.js';
-import {
-  select,
-  settings
-} from '../settings.js';
+import {BaseWidget} from './BaseWidget.js';
+import {utils} from '../utils.js';
+import {select, settings} from '../settings.js';
 
 export class HourPicker extends BaseWidget {
   constructor(wrapper) {

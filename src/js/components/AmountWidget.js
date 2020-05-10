@@ -1,11 +1,6 @@
-import {
-  select,
-  settings
-} from '../settings.js';
+import {select, settings} from '../settings.js';
 
-import {
-  BaseWidget
-} from './BaseWidget.js';
+import {BaseWidget} from './BaseWidget.js';
 
 export class AmountWidget extends BaseWidget { // informujemy że klasa jest rozszerzeniem klasy BW czyli będzie z niej dziedziczyć
   constructor(wrapper) {
