@@ -115,7 +115,7 @@ export class Booking {
         }
       }
     }
-    
+    console.log('all bookings', thisBooking.booked);
   }
   makeBooked(date, hour, duration, table) {
     const thisBooking = this;
@@ -135,7 +135,7 @@ export class Booking {
         thisBooking.booked[date][hourBlock].push(table[tableId]);
       }
     }
-    console.log('all bookings', thisBooking.booked);
+    
   }
 
 }
