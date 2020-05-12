@@ -1,4 +1,4 @@
-import { templates, select, settings } from '../settings.js';
+import { templates, select, settings, classNames } from '../settings.js';
 import { utils } from '../utils.js';
 import { AmountWidget } from './AmountWidget.js';
 import { DatePicker } from './DatePicker.js';
@@ -29,6 +29,8 @@ export class Booking {
     thisBooking.dom.datePicker = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
 
+    thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
+
   }
 
   initWidgets() {
@@ -38,6 +40,10 @@ export class Booking {
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
+
+    thisBooking.dom.wrapper.addEventListener('updated', function () {
+      thisBooking.updateDOM();
+    });
   }
 
 
@@ -116,6 +122,8 @@ export class Booking {
       }
     }
     console.log('all bookings', thisBooking.booked);
+
+    thisBooking.updateDOM();
   }
   makeBooked(date, hour, duration, table) {
     const thisBooking = this;
@@ -135,7 +143,41 @@ export class Booking {
         thisBooking.booked[date][hourBlock].push(table[tableId]);
       }
     }
-    
+
+  }
+
+  updateDOM() { // czegoś tu jeszcze brakuje by stoliki zarezerwowane sie wyszarzyły... sprawdzałam w css i tam jest klasa. 
+    //console.log('show me updateDOM');
+
+    const thisBooking = this;
+
+    thisBooking.date = thisBooking.datePicker.value;
+    thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
+
+    for (let table of thisBooking.dom.tables) {
+      let tableId = table.getAttribute(settings.booking.tableIdAttribute);
+      if (!isNaN(tableId)) {
+        tableId = parseInt(tableId);
+      }
+      //console.log('tableId', tableId);
+
+      if (
+        typeof thisBooking.booked[thisBooking.date] != 'undefined' &&
+        typeof thisBooking.booked[thisBooking.date][thisBooking.hour] !=
+        'undefined' &&
+        thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableId)
+      ) {
+        table.classList.add(classNames.booking.tableBooked);
+        //console.log('booked' + tableId);
+      } else {
+        table.classList.remove(classNames.booking.tableBooked);
+        console.log('not booked' + tableId);
+      }
+    }
+
+
+
+
   }
 
 }
