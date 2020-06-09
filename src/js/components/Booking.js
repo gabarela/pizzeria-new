@@ -146,7 +146,7 @@ export class Booking {
 
   }
 
-  updateDOM() { // czegoś tu jeszcze brakuje by stoliki zarezerwowane sie wyszarzyły... sprawdzałam w css i tam jest klasa. 
+  /*updateDOM() { // czegoś tu jeszcze brakuje by stoliki zarezerwowane sie wyszarzyły... sprawdzałam w css i tam jest klasa. 
     //console.log('show me updateDOM');
 
     const thisBooking = this;
@@ -161,14 +161,13 @@ export class Booking {
       }
       //console.log('tableId', tableId);
 
-      if (
+      if ( // tutaj gdzies jest błąd
         typeof thisBooking.booked[thisBooking.date] != 'undefined' &&
-        typeof thisBooking.booked[thisBooking.date][thisBooking.hour] !=
-        'undefined' &&
+        typeof thisBooking.booked[thisBooking.date][thisBooking.hour] != 'undefined' &&
         thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableId)
       ) {
         table.classList.add(classNames.booking.tableBooked);
-        //console.log('booked' + tableId);
+        console.log('booked' + tableId);
       } else {
         table.classList.remove(classNames.booking.tableBooked);
         console.log('not booked' + tableId);
@@ -178,7 +177,36 @@ export class Booking {
 
 
 
+  }*/
+
+  updateDOM() {
+    const thisBooking = this;
+
+    thisBooking.date = thisBooking.datePicker.value;
+    //console.log('Booking.date:', thisBooking.date);
+    thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
+
+    let allAvailable = false;
+
+    if (typeof thisBooking.booked[thisBooking.date] == 'undefined' ||
+      typeof thisBooking.booked[thisBooking.date][thisBooking.hour] == 'undefined'
+    ) {
+      allAvailable = true;
+    }
+    for (let table of thisBooking.dom.tables) {
+      let tableId = table.getAttribute(settings.booking.tableIdAttribute);
+      if (!isNaN(tableId)) {
+        tableId = parseInt(tableId);
+      }
+      if (!allAvailable &&
+        thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableId)) {
+        table.classList.add(classNames.booking.tableBooked);
+      } else {
+        table.classList.remove(classNames.booking.tableBooked);
+      }
+    }
   }
+
 
 }
 
