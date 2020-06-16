@@ -146,8 +146,8 @@ export class Booking {
 
   }
 
-  updateDOM() { // czegoś tu jeszcze brakuje by stoliki zarezerwowane sie wyszarzyły... sprawdzałam w css i tam jest klasa. 
-    //console.log('show me updateDOM');
+  updateDOM() { // czegoś tu jeszcze brakuje by stoliki zarezerwowane sie wyszarzyły...
+    console.log('show me updateDOM');
 
     const thisBooking = this;
 
