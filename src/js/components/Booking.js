@@ -139,14 +139,14 @@ export class Booking {
         thisBooking.booked[date][hourBlock] = [];
       }
 
-      for (let tableId = 0; tableId < table.length; tableId++) {
-        thisBooking.booked[date][hourBlock].push(table[tableId]);
-      }
-    }
+      thisBooking.booked[date][hourBlock].push(table);
 
+    }
   }
 
-  updateDOM() { // czegoś tu jeszcze brakuje by stoliki zarezerwowane sie wyszarzyły...
+  
+
+  updateDOM() { 
     console.log('show me updateDOM');
 
     const thisBooking = this;
@@ -161,7 +161,7 @@ export class Booking {
       }
       //console.log('tableId', tableId);
 
-      if ( // tutaj gdzies jest błąd
+      if ( 
         typeof thisBooking.booked[thisBooking.date] != 'undefined' &&
         typeof thisBooking.booked[thisBooking.date][thisBooking.hour] != 'undefined' &&
         thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableId)
@@ -173,9 +173,6 @@ export class Booking {
         console.log('not booked' + tableId);
       }
     }
-
-
-
 
   }
 
